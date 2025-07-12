@@ -1,0 +1,16 @@
+spring:
+  redis:
+    host: localhost
+    port: 6379
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ecommerce-db
+
+jwt:
+  secret: vlBTOclLQE40B8gJCLPq8wu4SNrljZvs
+
+#springdoc:
+#  api-docs:
+#    path: /api-docs
+#  swagger-ui:
+#    path: /swagger-ui.html
