@@ -1,16 +1,10 @@
 spring:
   redis:
-    host: localhost
-    port: 6379
+    url: ${REDIS_URL}
   data:
     mongodb:
-      uri: mongodb://localhost:27017/ecommerce-db
+      uri: ${MONGO_DB_URL}
 
 jwt:
-  secret: vlBTOclLQE40B8gJCLPq8wu4SNrljZvs
+  secret: ${JWT_SECRET}
 
-#springdoc:
-#  api-docs:
-#    path: /api-docs
-#  swagger-ui:
-#    path: /swagger-ui.html
