@@ -2,6 +2,7 @@ package com.golang.services;
 
 import com.golang.models.Product;
 import com.golang.repositories.ProductRepository;
+import com.golang.services.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public Product createProduct(Product product) {
-        if(!isCurrentUserAdmin()){
+        if (!isCurrentUserAdmin()) {
             throw new RuntimeException("User don't have admin access");
         }
         String token = jwtService.getCurrentJwtToken();
@@ -34,14 +35,14 @@ public class ProductService {
     }
 
     public Product updateProduct(String id, Product updated) {
-        if(!isCurrentUserAdmin()){
+        if (!isCurrentUserAdmin()) {
             throw new RuntimeException("User don't have admin access");
         }
 
         Product existing = getProductById(id);
         if (existing == null) return null;
 
-        if(!rightToAccess(existing)){
+        if (!rightToAccess(existing)) {
             throw new RuntimeException("Current admin don't have rights for this product");
         }
 
@@ -55,25 +56,25 @@ public class ProductService {
     }
 
     public void deleteProduct(String id) {
-        if(!isCurrentUserAdmin()){
+        if (!isCurrentUserAdmin()) {
             throw new RuntimeException("User don't have admin access");
         }
 
         Product existing = getProductById(id);
         if (existing == null) return;
 
-        if(!rightToAccess(existing)){
+        if (!rightToAccess(existing)) {
             throw new RuntimeException("Current admin don't have rights for this product");
         }
         productRepository.deleteById(id);
     }
 
-    private boolean isCurrentUserAdmin(){
+    private boolean isCurrentUserAdmin() {
         List<String> roles = getCurrentUserRole();
         return roles.contains("ROLE_ADMIN");
     }
 
-    private boolean rightToAccess(Product product){
+    private boolean rightToAccess(Product product) {
         String token = jwtService.getCurrentJwtToken();
         String currentUser = jwtService.extractUserId(token);
         return product.getAddedByUserId().equals(currentUser);

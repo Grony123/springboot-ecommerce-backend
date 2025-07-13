@@ -20,13 +20,13 @@ public class AuthController {
 
     @PostMapping("/register/user")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest request) {
-        String token = authService.register(request,"USER");
+        String token = authService.register(request, "USER");
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/register/admin")
     public ResponseEntity<AuthResponse> registerAdmin(@RequestBody RegisterRequest request) {
-        String token = authService.register(request,"ADMIN");
+        String token = authService.register(request, "ADMIN");
         return ResponseEntity.ok(new AuthResponse(token));
     }
 

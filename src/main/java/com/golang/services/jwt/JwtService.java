@@ -1,4 +1,4 @@
-package com.golang.services;
+package com.golang.services.jwt;
 
 import com.golang.models.User;
 import io.jsonwebtoken.Claims;
@@ -34,8 +34,8 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .addClaims(Map.of(
-                        "role","ROLE_"+user.getRole(),
-                        "userId",user.getId())
+                        "role", "ROLE_" + user.getRole(),
+                        "userId", user.getId())
                 )
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
@@ -43,13 +43,13 @@ public class JwtService {
                 .compact();
     }
 
-    public String getCurrentJwtToken(){
+    public String getCurrentJwtToken() {
         String authHeader = request.getHeader("Authorization");
         return authHeader.substring(7);
     }
 
-    public String extractUserId(String token){
-        return getClaims(token).get("userId",String.class);
+    public String extractUserId(String token) {
+        return getClaims(token).get("userId", String.class);
     }
 
     public String extractEmail(String token) {

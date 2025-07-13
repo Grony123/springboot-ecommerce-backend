@@ -5,21 +5,22 @@ import com.golang.models.User;
 import com.golang.models.dtos.LoginRequest;
 import com.golang.models.dtos.RegisterRequest;
 import com.golang.repositories.UserRepository;
+import com.golang.services.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private JwtService jwtService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
 
     public String register(RegisterRequest request, String role) {
         if (userRepository.existsByEmail(request.getEmail())) {
