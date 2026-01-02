@@ -6,18 +6,18 @@
             </pattern>
         </encoder>
     </appender>
-    <appender name="myFileAppender" class="ch.qos.logback.core.FileAppender">
-        <encoder>
-            <pattern>
-                %d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} --- %msg %n
-            </pattern>
-        </encoder>
-        <file>
-            ecommerce.log
-        </file>
-    </appender>
+<!--    <appender name="myFileAppender" class="ch.qos.logback.core.FileAppender">-->
+<!--        <encoder>-->
+<!--            <pattern>-->
+<!--                %d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -&#45;&#45; %msg %n-->
+<!--            </pattern>-->
+<!--        </encoder>-->
+<!--        <file>-->
+<!--            ecommerce.log-->
+<!--        </file>-->
+<!--    </appender>-->
     <root level="INFO">
         <appender-ref ref="myConsoleAppender"/>
-        <appender-ref ref="myFileAppender"/>
+<!--        <appender-ref ref="myFileAppender"/>-->
     </root>
 </configuration>
