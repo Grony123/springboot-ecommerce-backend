@@ -2,6 +2,7 @@ package com.golang.services;
 
 import com.golang.exception.auth.EmailAlreadyExistsException;
 import com.golang.models.User;
+import com.golang.models.dtos.AuthResponse;
 import com.golang.models.dtos.LoginRequest;
 import com.golang.models.dtos.RegisterRequest;
 import com.golang.repositories.UserRepository;
@@ -37,7 +38,7 @@ public class AuthService {
         return jwtService.generateToken(user);
     }
 
-    public String login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -45,6 +46,6 @@ public class AuthService {
             throw new BadCredentialsException("Invalid credentials");
         }
 
-        return jwtService.generateToken(user);
+        return new AuthResponse(jwtService.generateToken(user),user.getRole());
     }
 }

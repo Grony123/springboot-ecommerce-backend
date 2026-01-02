@@ -1,5 +1,6 @@
-package com.golang.services.jwt;
+package com.golang.configuration;
 
+import com.golang.services.jwt.JwtService;
 import com.golang.services.users.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

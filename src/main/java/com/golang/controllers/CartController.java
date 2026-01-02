@@ -1,11 +1,13 @@
 package com.golang.controllers;
 
-import com.golang.models.Cart;
+import com.golang.models.CartItem;
 import com.golang.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -15,7 +17,7 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public Cart getCart(@AuthenticationPrincipal UserDetails user) {
+    public List<CartItem> getCart(@AuthenticationPrincipal UserDetails user) {
         return cartService.getCart(user.getUsername());
     }
 

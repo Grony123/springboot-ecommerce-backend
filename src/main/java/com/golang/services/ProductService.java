@@ -26,8 +26,17 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Product> getProducts() {
+        if(!isCurrentUserAdmin()){
+            return productRepository.findAll();
+        }
+        return getProductsForAdmin();
+    }
+
+    private List<Product> getProductsForAdmin() {
+        String token = jwtService.getCurrentJwtToken();
+        String currentUser = jwtService.extractUserId(token);
+        return productRepository.findByAddedByUserId(currentUser);
     }
 
     public Product getProductById(String id) {

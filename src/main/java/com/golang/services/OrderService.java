@@ -1,15 +1,18 @@
 package com.golang.services;
 
-import com.golang.models.Cart;
 import com.golang.models.Order;
 import com.golang.models.OrderItem;
+import com.golang.models.Product;
 import com.golang.repositories.OrderRepository;
 import com.golang.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,30 +29,49 @@ public class OrderService {
 
     public Order checkout(String userEmail) {
         // 1. Get cart
-        Cart cart = (Cart) redisTemplate.opsForValue().get(getCartKey(userEmail));
-        if (cart == null || cart.getItems().isEmpty()) {
+        HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
+        Map<String, String> cartEntries = hashOps.entries(getCartKey(userEmail));
+        if (cartEntries.isEmpty()) {
             throw new RuntimeException("Cart is empty");
         }
 
-        // 2. Calculate total price
-        double total = cart.getItems().entrySet().stream()
-                .mapToDouble(entry -> {
-                    var product = productRepository.findById(entry.getKey())
-                            .orElseThrow(() -> new RuntimeException("Product not found"));
-                    return product.getPrice() * entry.getValue();
-                })
-                .sum();
+        List<String> productIds = new ArrayList<>(cartEntries.keySet());
 
-        // 3. Create OrderItems
-        List<OrderItem> orderItems = cart.getItems().entrySet().stream()
-                .map(entry -> new OrderItem(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        List<Product> products = productRepository.findAllById(productIds);
+
+        Map<String, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId,p -> p));
+
+        double totalPrice = 0;
+        List<OrderItem> orderItems = new ArrayList<>();
+
+
+        for (var entry : cartEntries.entrySet()) {
+            String productId = entry.getKey();
+            int quantity = Integer.parseInt(entry.getValue());
+
+            Product p = productMap.get(productId);
+            if (p == null) {
+                throw new RuntimeException("Product not found: " + productId);
+            }
+
+            double itemTotal = p.getPrice() * quantity;
+            totalPrice += itemTotal;
+
+            // Build enriched OrderItem with name + price
+            orderItems.add(OrderItem.builder()
+                    .productId(productId)
+                    .productName(p.getName())
+                    .price(p.getPrice())
+                    .quantity(quantity)
+                    .build());
+        }
 
         // 4. Save order
         Order order = Order.builder()
                 .userEmail(userEmail)
                 .items(orderItems)
-                .totalPrice(total)
+                .totalPrice(totalPrice)
                 .status("PENDING")
                 .build();
 

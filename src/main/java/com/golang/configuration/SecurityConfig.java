@@ -1,6 +1,5 @@
 package com.golang.configuration;
 
-import com.golang.services.jwt.JwtAuthFilter;
 import com.golang.services.users.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +30,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // public routes
+                        .requestMatchers(HttpMethod.GET, "/api/products/manage").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                         .requestMatchers("/api/cart/**").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")

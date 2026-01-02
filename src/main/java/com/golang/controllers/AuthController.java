@@ -21,19 +21,18 @@ public class AuthController {
     @PostMapping("/register/user")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest request) {
         String token = authService.register(request, "USER");
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token,"USER"));
     }
 
     @PostMapping("/register/admin")
     public ResponseEntity<AuthResponse> registerAdmin(@RequestBody RegisterRequest request) {
         String token = authService.register(request, "ADMIN");
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token,"ADMIN"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        String token = authService.login(request);
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(authService.login(request));
     }
 }
 
